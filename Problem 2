@@ -1,0 +1,62 @@
+class Position {
+    int row;
+    int col;
+
+    public Position(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+}
+
+abstract class Piece {
+    Position currentPosition;
+
+    public Piece(Position initialPosition) {
+        this.currentPosition = initialPosition;
+    }
+
+    public abstract boolean isLegalMove(Position newPosition);
+}
+
+class Rook extends Piece {
+    public Rook(Position initialPosition) {
+        super(initialPosition);
+    }
+
+    public boolean isLegalMove(Position newPosition) {
+        System.out.println("Moving Rook from " + currentPosition.row + "," + currentPosition.col
+                + " to " + newPosition.row + "," + newPosition.col);
+        boolean legal = currentPosition.row == newPosition.row || currentPosition.col == newPosition.col;
+        System.out.println("Legal Move: " + legal);
+        return legal;
+    }
+}
+
+class King extends Piece {
+    public King(Position initialPosition) {
+        super(initialPosition);
+    }
+
+    public boolean isLegalMove(Position newPosition) {
+        System.out.println("Moving King from " + currentPosition.row + "," + currentPosition.col
+                + " to " + newPosition.row + "," + newPosition.col);
+        int rowDiff = Math.abs(currentPosition.row - newPosition.row);
+        int colDiff = Math.abs(currentPosition.col - newPosition.col);
+        boolean legal = rowDiff <= 1 && colDiff <= 1;
+        System.out.println("Legal Move: " + legal);
+        return legal;
+    }
+}
+
+public class ChessGame {
+    public static void main(String[] args) {
+        Piece rook = new Rook(new Position(4, 4));
+        Piece king = new King(new Position(2, 2));
+        
+        Position newPosition1 = new Position(4, 6);
+        Position newPosition2 = new Position(3, 3);
+
+        rook.isLegalMove(newPosition1);
+        king.isLegalMove(newPosition2);
+    }
+}
