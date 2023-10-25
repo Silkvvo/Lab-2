@@ -1,0 +1,112 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Circuit {
+    public abstract double getResistance();
+    public abstract double getPotentialDiff();
+    public abstract void applyPotentialDiff(double V);
+
+    public double getPower() {
+        double V = getPotentialDiff();
+        double I = getCurrent();
+        return V * I;
+    }
+
+    public double getCurrent() {
+        return getPotentialDiff() / getResistance();
+    }
+}
+
+class Resistor extends Circuit {
+    private double resistance;
+    private double potentialDifference;
+
+    public Resistor(double resistance) {
+        this.resistance = resistance;
+        this.potentialDifference = 0.0;
+    }
+
+    public double getResistance() {
+        return resistance;
+    }
+
+    public double getPotentialDiff() {
+        return potentialDifference;
+    }
+
+    public void applyPotentialDiff(double V) {
+        potentialDifference = V;
+    }
+}
+
+    class Series extends Circuit {
+    private Circuit component1;
+    private Circuit component2;
+
+    public Series(Circuit component1, Circuit component2) {
+        this.component1 = component1;
+        this.component2 = component2;
+    }
+
+    public double getResistance() {
+        return component1.getResistance() + component2.getResistance();
+    }
+
+    public double getPotentialDiff() {
+        return component1.getPotentialDiff() + component2.getPotentialDiff();
+    }
+
+
+    public void applyPotentialDiff(double V) {
+        component1.applyPotentialDiff(V);
+        component2.applyPotentialDiff(V);
+    }
+}
+
+class Parallel extends Circuit {
+    private Circuit component1;
+    private Circuit component2;
+
+    public Parallel(Circuit component1, Circuit component2) {
+        this.component1 = component1;
+        this.component2 = component2;
+    }
+
+    public double getResistance() {
+        double R1 = component1.getResistance();
+        double R2 = component2.getResistance();
+        return 1.0 / (1.0 / R1 + 1.0 / R2);
+    }
+
+    public double getPotentialDiff() {
+        return component1.getPotentialDiff(); 
+    }
+
+    public void applyPotentialDiff(double V) {
+        component1.applyPotentialDiff(V);
+        component2.applyPotentialDiff(V);
+    }
+}
+
+    public class Main {
+    public static void main(String[] args) {
+        Circuit a = new Resistor(3.0);
+        Circuit b = new Resistor(3.0);
+        Circuit c = new Resistor(6.0);
+        Circuit d = new Resistor(3.0);
+        Circuit e = new Resistor(2.0);
+        Circuit f = new Series(a, b);
+        Circuit g = new Parallel(c, d);
+        Circuit h = new Series(g, e);
+        Circuit circuit = new Parallel(h, f);
+
+        double R = circuit.getResistance();
+        double V = 12.0; 
+
+        circuit.applyPotentialDiff(V);
+
+        System.out.println("Equivalent Resistance: " + R + " Ohms");
+        System.out.println("Total Current: " + circuit.getCurrent() + " A");
+        System.out.println("Total Power Dissipated: " + circuit.getPower() + " Watts");
+    }
+}
