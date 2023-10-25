@@ -1,0 +1,62 @@
+import java.util.HashSet;
+import java.util.Objects;
+
+class Vehicle {
+    private String brand;
+    private String model;
+
+    public Vehicle(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Vehicle vehicle = (Vehicle) obj;
+        return Objects.equals(brand, vehicle.brand) &&
+               Objects.equals(model, vehicle.model);
+    }
+
+    public int hashCode() {
+        return Objects.hash(brand, model);
+    }
+
+    public void start() {
+        System.out.println("Starting the vehicle.");
+    }
+}
+
+class Car extends Vehicle {
+    private int year;
+
+    public Car(String brand, String model, int year) {
+        super(brand, model);
+        this.year = year;
+    }
+
+    @Override
+    public void start() {
+        System.out.println("Starting the car.");
+    }
+}
+
+public class TestVehicles {
+    public static void main(String[] args) {
+        HashSet<Vehicle> vehicleHashSet = new HashSet<>();
+
+        Vehicle vehicle1 = new Vehicle("Toyota", "Camry");
+        Car car1 = new Car("Honda", "Civic", 2022);
+        Car car2 = new Car("Toyota", "Camry", 2022);
+
+        vehicleHashSet.add(vehicle1);
+        vehicleHashSet.add(car1);
+        vehicleHashSet.add(car2);
+
+        System.out.println("HashSet size: " + vehicleHashSet.size()); // Should be 2
+
+        for (Vehicle vehicle : vehicleHashSet) {
+            vehicle.start(); // Calls the overridden start method
+        }
+    }
+}
